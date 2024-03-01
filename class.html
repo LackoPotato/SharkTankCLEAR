@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="2.png">
+  <title>Clear | Class</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+
+  //Implementation of Hamburger Menu
+
+  var burger_button
+  var burger_menu 
+  var burger_selector
+  var cur_class_selected = ""
+  var cur_task_selected = ""
+  var current_tab = "assign_tab"
+
+  var class_arrays = [['I&S','321','7E'],['I&S','213','8F'],['GEO','213','G9'],['GEO','213','G10'],['GEO','213','G9 (OPEN)'],['GEO','213','G10 (OPEN)'],['TEST','143','TST (Class)']]
+  var class_data_arrays = [[12,['Green Planting',11,"1/2/24","20/2/4","Plant plants \ncause planted plants are green"],['Farming',10,"1/12/23","No Due Date","Farm? Farm! \nFarming Farm Farm Farm Farming?"],['Effects of Overfarming',11,"23/11/23","No Due Date","There are effects...\n\nthere are a ton"],['Criteria D Practice',9,"18/11/23","No Due Date","Practice makes perfect\n\nMost of the times..."]],[23,['Jim Crow Laws',18,"0/0/0","No Due Date","I am running out of example descriptions"],['Montgomery Bus Protest',20,"1/4/30","No Due Date","Example Description"],['I have a dream',22,"1/1/1","NO DUE DATE","This format hurts to write"]],[12,['Rivers',11,"12/3/24","No Due Date","Rivers are rivers?"],['River Management',11,"23/2/24","5/3/24","Forgiveness? Forgiveness is not given, it is earned."],['Dams Research Task',10,"10/2/24","No Due Date","Research Dams please."],['Yangtze River Debate',9,"-1/32/98","Dams block Flow?"]],[],[],[],[],[],[],[]]
+  var tab_list = ["assign_tab","view_task_tab","view_stud_tab"]
+  var active = false
+
+  window.onload = function() {
+    for (let i = 0; i < class_arrays.length;i++){
+      cur_class = class_arrays[i]
+      render_selector_element(i,cur_class[0],cur_class[1],cur_class[2])
+      if (i === 0){
+        document.getElementById(i).classList.add("selected")
+        cur_class_selected = i
+      }
+    }
+
+    set_tasks(class_data_arrays[0])
+    console.log(class_data_arrays)
+    burger_button = document.getElementById('open_burger')
+    burger_menu = document.getElementById('hamburger_menu')
+    burger_selector = document.getElementById('selector')
+    search_class = document.getElementById('search_class')
+    
+    burger_selector.style = "width: 50%;opacity:100;"
+    burger_button.addEventListener('click', function() {open_burgermenu()})
+    document.getElementById("sort_class_time").addEventListener('click',function() {set_overall_class_from_hamburger(id);})
+    set_task_view_title(0)
+
+    for (let i = 0; i < tab_list.length; i++){
+      document.getElementById(tab_list[i]).addEventListener('click',function() {set_tab_current(tab_list[i]);})
+    }
+
+    set_tab_current(tab_list[0])
+
+    disable_start_date()
+    disable_end_date()
+    task_set(0)
+  }
+
+  //Implementation of Hamburger Menu
+
+  function set_overall_class_from_hamburger(id){
+    select_class(id);
+    set_task_view_title(id);
+    set_tasks(class_data_arrays[id]);
+    select_task('0taskViewSelection')
+  }
+
+  function open_burgermenu(){
+    active = ! active
+    if (active){
+      burger_button.style = "transform: rotate(90deg) translate(0%, 0);left:90%;"
+      burger_menu.style = "width:30%;"
+      burger_selector.style = "margin-left:5%;opacity:100;"
+      search_class.style = "margin-left:5%;"
+      
+    } else {
+      burger_button.style = "transform: rotate(0deg) translate(-50%, 0);"
+      burger_menu.style = ""
+      search_class.style = ""
+      burger_selector.style = "width:50%;opacity:100;"
+    }
+  }
+
+  function render_selector_element(id=0,subject="TEST",room="NaN",class_section="9X",parent="selector"){
+    mainDiv = document.createElement("div")
+    mainDiv.addEventListener('click', function() {set_overall_class_from_hamburger(id);})
+    mainDiv.classList.add("class_element")
+    mainDiv.setAttribute("id",id)
+
+    subjectTitle = document.createElement("h")
+    subjectTitle.appendChild(document.createTextNode(subject))
+    
+    roomTitle = document.createElement("p")
+    roomTitle.appendChild(document.createTextNode("Room - " + room))
+    roomTitle.appendChild(document.createElement("br"))
+    roomTitle.appendChild(document.createTextNode("Class - "+class_section))
+
+    mainDiv.appendChild(subjectTitle)
+    mainDiv.appendChild(roomTitle)
+    document.getElementById(parent).appendChild(mainDiv)
+  }
+
+  function select_class(id){
+    classElement = document.getElementById(id)
+    previousClassElement = document.getElementById(cur_class_selected)
+    if (!classElement.classList.contains("selected")){
+      if (previousClassElement != null){
+      previousClassElement.classList.remove("selected")
+      }
+      classElement.classList.add("selected")
+      cur_class_selected = id
+    }
+  } 
+
+  //Implementation of Task View Menu
+
+  function set_task_view_title(id){
+    document.getElementById("task_view_subject").innerText = class_arrays[id][0]
+    document.getElementById("task_view_class").innerText = class_arrays[id][1]
+    document.getElementById("task_view_room").innerText = class_arrays[id][2]
+  }
+
+  function select_task(id){
+    console.log("TASK_SELECT?",id)
+    classElement = document.getElementById(id)
+    previousClassElement = document.getElementById(cur_task_selected)
+    if (!classElement.classList.contains("selected")){
+      if (previousClassElement != null){
+      previousClassElement.classList.remove("selected")
+      }
+      classElement.classList.add("selected")
+      cur_task_selected = id
+    }
+  } 
+
+  function render_task_view(id,name,count_done,count_total,parent="task_view_div"){
+    task_main_div = document.createElement('div')
+    task_main_div.classList.add('task_view_element_type_select')
+    task_main_div.setAttribute("id",id+"taskViewSelection")
+    task_main_div.addEventListener('click', function() {task_set(id)})
+
+    task_title = document.createElement('div')
+    task_title.classList.add('task_view_element_type_select_child_name')
+    task_title.appendChild(document.createTextNode(name))
+
+    task_percent_div = document.createElement('div')
+
+    task_percent_done = document.createElement('div')
+    task_percent_done.classList.add("task_view_element_type_select_child_percentage_done")
+    task_percent_done.appendChild(document.createTextNode(count_done))
+
+    task_percent_total = document.createElement('div')
+    task_percent_total.appendChild(document.createTextNode(count_total))
+
+    task_percent_div.appendChild(task_percent_done)
+    task_percent_div.appendChild(task_percent_total)
+    task_main_div.appendChild(task_title)
+    task_main_div.appendChild(task_percent_div)
+    document.getElementById(parent).appendChild(task_main_div)
+  }
+
+  function set_tasks(task_list = Array,parent='task_view_div'){
+    parentNode = document.getElementById(parent)
+    while (parentNode.firstChild) {parentNode.removeChild(parentNode.firstChild);}
+    if (null || task_list.length == 1 || task_list.length == 0){
+      render_task_view(0,"No tasks currently","","")
+    } else {
+      person_count = task_list[0]
+      for (let d = 0; d < task_list.length-1; d++){
+        task_data = task_list[d+1]
+        render_task_view(d,task_data[0],task_data[1],person_count)
+      }
+    }
+  }
+
+
+    //Set current tab of the menu in the center
+    function set_tab_current(id_current){
+        element = document.getElementById(id_current)
+        document.getElementById(current_tab).style = ""
+        document.getElementById(current_tab+"_main").style = "display:none;"
+        current_tab = id_current
+        element.style = "background-color: #4d50f9 !important;"
+        document.getElementById(id_current+'_main').style = "display:block;" 
+    }
+
+
+    //Implementation of Task View Additor
+    function task_set(id){
+      select_task(id+"taskViewSelection");
+      total_stud = class_data_arrays[cur_class_selected][0]
+      current_task_data = class_data_arrays[cur_class_selected][id+1]
+      console.log(current_task_data)
+      set_content_view_task(current_task_data,total_stud)
+    }
+
+
+    function set_content_view_task(task,total_stud,parent="view_task_tab_main"){
+      console.log(document.getElementById(parent+"_title"))
+      document.getElementById(parent+"_title").innerText = task[0]
+      document.getElementById(parent+"_complete").innerText = task[1]
+      document.getElementById(parent+"_incomplete").innerText = parseInt(total_stud) - parseInt(task[1])
+      document.getElementById(parent+"_assigned").innerText = task[2]
+      document.getElementById(parent+"_due").innerText = task[3]
+
+      text_node = document.getElementById(parent+"_info")
+      while (text_node.firstChild) {text_node.removeChild(text_node.firstChild);}
+      split_linebreaks = task[4].split("\n")
+      for (let i = 0; i < split_linebreaks.length; i++){
+        document.getElementById(parent+"_info").appendChild(document.createTextNode(split_linebreaks[i]))
+        document.getElementById(parent+"_info").appendChild(document.createElement("br"))
+      }
+    }
+
+    //Implementation of Task Submit
+
+    function validate_dats(){
+      checked = document.getElementById("assign_to_students").checked
+      if (checked){
+        node.classList.add("disabled")
+        node.style = "color:#333333;"
+      } else {
+        node.classList.remove("disabled")
+        node.style = ""
+      }
+    }
+
+    function disable_start_date(){
+      node = document.getElementById("start_date")
+      checked = document.getElementById("assign_now").checked
+      node.disabled = checked
+    }
+
+    function disable_end_date(){
+      node = document.getElementById("end_date")
+      checked = document.getElementById("assign_end").checked
+      node.disabled = checked
+    }
+
+    function add_task(data){
+      console.log(data)
+      title = data[0].value
+      information = data[1].value
+      assign_all = data[2].checked
+      if (data[5].checked){
+        start_date = new Date().toLocaleString()
+        start_date = start_date.substring(0,start_date.indexOf(","))
+      } else {
+        date_purging = data[3].value
+        year = date_purging.substring(0,date_purging.indexOf("-"))
+        date_purging = date_purging.substring(date_purging.indexOf("-")+1,date_purging.length)
+        day = date_purging.substring(0,date_purging.indexOf("-"))
+        month = date_purging.substring(date_purging.indexOf("-")+1,date_purging.length)
+        start_date = day+"/"+month+"/"+year
+      }
+
+      if (data[6].checked){
+        end_date = "No Due Date"
+      } else {
+        date_purging = data[4].value
+        console.log("FORM_END",date_purging)
+        year = date_purging.substring(0,date_purging.indexOf("-"))
+        date_purging = date_purging.substring(date_purging.indexOf("-")+1,date_purging.length)
+        day = date_purging.substring(0,date_purging.indexOf("-"))
+        month = date_purging.substring(date_purging.indexOf("-")+1,date_purging.length)
+        end_date = day+"/"+month+"/"+year
+      }
+      task = [title,0,start_date,end_date,information]
+      class_data_arrays[cur_class_selected].splice(1,0,task)
+      set_overall_class_from_hamburger(cur_class_selected)
+
+      data[0].value = ''
+      data[1].value = ''
+      data[2].checked = false
+      data[3].value = ''
+      data[4].value = ''
+      data[5].checked = false
+      data[6].checked = false
+      document.getElementById("start_date").disabled = false
+      document.getElementById("end_date").disabled = false
+      task_set(0)
+    }
+</script>
+</head>
+<body>
+  <div id="topnav" class="topnav">
+    <a href="desk.html">Desk</a>
+    <a class="active" href="class.html">Class</a>
+    <a href="staff.html">Staff</a>
+    <span class="material-symbols-outlined" style="margin-left: auto;color:#FCF7F8;">search</span>
+    <input size="30px" type="text" style="border-radius:50px;padding-left: 10px;padding-right:10px;" placeholder="waiting for something to happen?">
+    <a class="imgButton" href="desk.html"><img height="30" src="logo.png"></a>
+  </div>
+
+    <!-- ~~Hamburgers in my head~~ -->
+    <div class="hamburger_menu" id="hamburger_menu">
+      <div style="height: 80px;">
+        <span class="material-symbols-outlined centered-x burger_button" id="open_burger">menu</span>
+        <div class="search" id="search_class">
+          <input style="float:left;margin-right:10px;font-size:20px;" size="20px" type="text" placeholder="Search Class...">
+          <span class="material-symbols-outlined schedule_sort" id="sort_class_time" style="font-size:32px !important;">schedule</span>
+        </div>
+      </div>
+      <div id="selector" class="selector">
+      </div>
+    </div>
+
+    <!-- Task View -->
+    <div style="width:35%;margin-left:75px;float:left;margin-right: 20px;width:350px;max-height:65%; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;">
+      <div class="centered-x">
+          <!----LEGACY CODE DO NOT TOUCH PLEASE FOR THE LOVE OF GOD I ACTUALLY DONT KNOW HOW DOES THIS STILL WORK MAN LIKE ITS ONE BREATH AWAY FROM TURNING INTO DUST. REALLY LIKE I TYPE A RANDOM VALUE AND IT NOW JUST WORKS BUT OF COURSE IT ONLY WORKS WHEN OBSERVED. MUCH LIKE QUANTUM PHYSICS, MY CODE IS IN A SUPERPOSITION BETWEEN BARELY WORKING AND THRONGLED TO DEATH-->
+          <div>
+          <div style="width:150px;float:left;font-size:64px;"><h id="task_view_subject">abc</h></div>
+          <div style="font-size: 30px;">
+            <h id="task_view_class">asdf</h><br><h id="task_view_room">asd</h>
+          </div>
+          <div>
+            <input style="float:left;margin-right:10px;font-size:20px;" size="15px" type="text" placeholder="Search Task...">
+            <span class="material-symbols-outlined schedule_sort" style="font-size:32px !important;cursor: pointer;">schedule</span>
+          </div>
+        </div>
+        <br>
+        <div style="width: 95%;height: 3px;background-color: #FCF7F8;border-radius: 5%;" class="centered-x"></div>
+        <br>
+        <select name="class_sort_type" style="font-size: 24px;">
+          <option value="0"> Tasks Active </option> 
+          <option value="1"> Tasks No Deadline </option>
+          <option value="2"> Tasks Overdue </option>
+          <option value="3"> Tasks Done </option>
+        </select>
+        <br>
+        <br>
+        <div style="width: 95%;height: 3px;background-color: #FCF7F8;border-radius: 5%;margin-bottom: 10px;" class="centered-x"></div>
+        <div id="task_view_div" style="max-height: 296px;overflow:auto;" >
+          <div class="task_view_element_type_select"></div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- Class Main -->
+      <div style="float:left;margin-top:15px;width: 60%;">
+        <div class="class_main_element_tab" id="assign_tab"><h style="position: relative;top: 25%;left: 20%;transform: translate(-50%, -50%);" id="assign_tab_text">ASSIGN task</h></div>
+        <div class="class_main_element_tab" id="view_task_tab"><h style="position: relative;top: 25%;left: 20%;transform: translate(-50%, -50%);" id="view_task_tab_text">view task</h></div>
+        <div class="class_main_element_tab" id="view_stud_tab"><h style="position: relative;top: 25%;left: 20%;transform: translate(-50%, -50%);" id="view_stud_tab_text">view student</h></div>
+
+        <br><br>
+        <div class="bodyMainTab" id="assign_tab_main">
+          <form onsubmit="add_task(document.getElementsByName('taskData'));return false;">
+            <div style="float:left;font-size:48px;float:left;"><h id="task_view_subject">Assign</h></div>
+            <input name="taskData" size="23px" type="text" placeholder="Title" maxlength="255" style="float:left;margin-left:10px;font-size:32px;border-radius: 5px;margin-top: 5px;font-family: bungee;margin-bottom: 10px;" required></input>
+            <textarea name="taskData" placeholder="Task Information" style="font-size:20px;font-family:Arial, Helvetica, sans-serif;margin-top: 10px;width:98%;height: 150px;resize:none;" required></textarea>
+            <div style="height:100px">
+              <div style="background-color: #333333;width: 60%;height: 100px;margin-top: 10px;font-size: 24px;padding: 5px 5px 5px 5px;float:left;margin-right: 20px;">
+                <h style="height: 24px;">Upload</h>
+                <br>
+                <span style="font-size: 48px !important;white-space: nowrap;margin-top: 10px;cursor: pointer;" class="material-symbols-outlined">
+                  upload_file
+                </span>
+              </div>
+              <div style="width:300px;height: 100px; float: left;  position: relative;top: 50%;transform: translate(0, -40%);">
+                <div class="person_highlight" id="assign_to_students">
+                  <span class="material-symbols-outlined" style="margin-left:5px;font-size: 64px !important;float:left;margin-bottom: 20px;">person</span>
+                  <h><br>assign to students</h>
+                </div>
+                <input name="taskData" type="checkbox" id="assign_all" onclick="validate_dats();"><label>Assign All</label></input>
+              </div>
+            </div>
+            <br><br>
+            <div style="margin-left: 90%;height:0px;">
+              <button type="submit" style="background: none;border: none;">
+                <div style="background-color: #333333;width: 75px;height: 75px;border-radius: 75px;"><span class="material-symbols-outlined centered" style="transform: rotate(-45deg) translate(-20%, -90%);color:#FCF7F8 !important;font-size: 48px !important;">send</span></div>
+              </button>
+            </div>
+            <div>
+              <div style="float:left;">
+                <label for="start">Start date:</label><br>
+                <input pattern="\d{2}-\d{2}-\d{4}" name="taskData" id="start_date" type="date" required></input>
+              </div>
+              <h style="float:left;margin-left: 10px;margin-right: 10px;">----></h>
+              <div>
+                <label for="start">End date:</label><br>
+                <input pattern="\d{2}-\d{2}-\d{4}" name="taskData" style="margin-left:60px" type="date" id="end_date" required></input>
+              </div>
+            </div>
+            <br>
+            <div>
+              <input name="taskData" type="checkbox" id="assign_now" onclick="disable_start_date();"><label style="margin-right: 30px;">Assign now</label></input>
+              <input name="taskData" type="checkbox" id="assign_end" onclick="disable_end_date();"><label>No due date</label></input>
+            </div>
+        </form>
+        </div>
+
+        <!--View task tab-->
+        <div class="bodyMainTab" id="view_task_tab_main">
+          <div style="float:left;font-size:48px;float:left;"><h id="view_task_tab_main_title">Joshua Sandwich Man SJ</h></div>
+          <br><br><br>
+          <div style="background-color: #333333;padding: 10px 10px 10px 10px;overflow: scroll;height: 150px;font-family: Arial, Helvetica, sans-serif;"><p id="view_task_tab_main_info">Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ</p></div>
+          <br>
+          <div>
+            <div style="background-color: #333333;width: 50%;font-size: 32px ;padding: 5px;float:left;height: 100px;">Resources<br>
+              <span class="material-symbols-outlined" style="font-size: 48px !important;cursor: pointer;">draft</span>
+              <span class="material-symbols-outlined" style="font-size: 48px !important;cursor: pointer;">draft</span>
+              <span class="material-symbols-outlined" style="font-size: 48px !important;cursor: pointer;">draft</span>
+            </div>
+            <div style="background-color: #333333;width: 45%;font-size: 32px ;padding: 5px;margin-left: auto;height: 100px;position: relative; ">
+              <div style="margin-top:5px;width: 100%;">
+                <h>Assigned - </h>
+                <h id="view_task_tab_main_assigned">1/4/3</h>
+              </div>
+              <div style="position: absolute;bottom:0px;margin-bottom:5px;width: 100%;">
+                <h>Due - </h>
+                <h id="view_task_tab_main_due">1/4/3</h>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div style="background-color: #FCF7F8;width: 30%;font-size: 32px ;padding: 5px;height: 100px;color: #333333;float: left;margin-left: 20px;cursor: pointer;">
+            <div>
+              Complete
+            </div>
+            <div style="margin-left: 68%;width: 64px;height: 64px;"><h style="font-size: 64px !important;" id ="view_task_tab_main_complete">32</h></div>
+          </div>
+          <div style="background-color: #FCF7F8;width: 35%;font-size: 32px ;padding: 5px;height: 100px;color: #333333; margin-left: auto;margin-right: 20px;cursor: pointer;">
+            <div>
+              Incomplete
+            </div>
+            <div style="margin-left: 73%;width: 64px;height: 64px;"><h style="font-size: 64px !important;" id="view_task_tab_main_incomplete">32</h></div>
+          </div>
+        </div>
+
+        <div class="bodyMainTab" id="view_stud_tab_main">
+
+        </div>
+      </div>
+      <!-- I will organise my style sheets, I will organize my style sheets, i will organize my style sheets i will organise my style sheets. i will organise my style sheets, i will organise my style sheets, i will organise my style sheets-->
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  <div class="bottomnav">
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="terms-of-service.html">TOS</a>
+    <a href="cookie-policy.html">Cookie Details</a>
+  </div>
+</body>
+
+<!--CREATED BY PotatoMancer-->

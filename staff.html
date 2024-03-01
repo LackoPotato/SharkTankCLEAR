@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="3.png">
+  <title>Clear | Staff</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+    var burger_button
+  var burger_menu 
+  var burger_selector
+  var cur_class_selected = ""
+  var cur_task_selected = ""
+  var current_tab = "assign_tab"
+  var active = false
+
+  var class_arrays = [['I&S','321','7E'],['I&S','213','8F'],['GEO','213','G9'],['GEO','213','G10'],['GEO','213','G9 (OPEN)'],['GEO','213','G10 (OPEN)'],['TEST','143','TST (Class)']]
+  var class_data_arrays = [[12,['Green Planting',11,"1/2/24","20/2/4","Plant plants \ncause planted plants are green"],['Farming',10,"1/12/23","No Due Date","Farm? Farm! \nFarming Farm Farm Farm Farming?"],['Effects of Overfarming',11,"23/11/23","No Due Date","There are effects...\n\nthere are a ton"],['Criteria D Practice',9,"18/11/23","No Due Date","Practice makes perfect\n\nMost of the times..."]],[23,['Jim Crow Laws',18,"0/0/0","No Due Date","I am running out of example descriptions"],['Montgomery Bus Protest',20,"1/4/30","No Due Date","Example Description"],['I have a dream',22,"1/1/1","This format hurts to write"]],[12,['Rivers',11,"12/3/24","No Due Date","Rivers are rivers?"],['River Management',11,"23/2/24","5/3/24","Forgiveness? Forgiveness is not given, it is earned."],['Dams Research Task',10,"10/2/24","No Due Date","Research Dams please."],['Yangtze River Debate',9,"-1/32/98","Dams block Flow?"]],[],[],[],[],[],[],[]]
+
+  window.onload = function() {
+  for (let i = 0; i < class_arrays.length;i++){
+    cur_class = class_arrays[i]
+    render_selector_element(i,cur_class[0],cur_class[1],cur_class[2])
+    if (i === 0){
+      document.getElementById(i).classList.add("selected")
+      cur_class_selected = i
+    }
+  }
+  console.log(class_data_arrays)
+  burger_button = document.getElementById('open_burger')
+  burger_menu = document.getElementById('hamburger_menu')
+  burger_selector = document.getElementById('selector')
+  search_class = document.getElementById('search_class')
+  
+  burger_selector.style = "width: 50%;opacity:100;"
+  burger_button.addEventListener('click', function() {open_burgermenu()})
+  document.getElementById("sort_class_time").addEventListener('click',function() {set_overall_class_from_hamburger(id);})
+
+
+  function set_overall_class_from_hamburger(id){
+  select_class(id); 
+}
+
+function open_burgermenu(){
+  active = ! active
+  if (active){
+    burger_button.style = "transform: rotate(90deg) translate(0%, 0);left:90%;"
+    burger_menu.style = "width:30%;"
+    burger_selector.style = "margin-left:5%;opacity:100;"
+    search_class.style = "margin-left:5%;"
+    
+  } else {
+    burger_button.style = "transform: rotate(0deg) translate(-50%, 0);"
+    burger_menu.style = ""
+    search_class.style = ""
+    burger_selector.style = "width:50%;opacity:100;"
+  }
+}
+
+function render_selector_element(id=0,subject="TEST",room="NaN",class_section="9X",parent="selector"){
+  mainDiv = document.createElement("div")
+  mainDiv.addEventListener('click', function() {set_overall_class_from_hamburger(id);})
+  mainDiv.classList.add("class_element")
+  mainDiv.setAttribute("id",id)
+
+  subjectTitle = document.createElement("h")
+  subjectTitle.appendChild(document.createTextNode(subject))
+  
+  roomTitle = document.createElement("p")
+  roomTitle.appendChild(document.createTextNode("Room - " + room))
+  roomTitle.appendChild(document.createElement("br"))
+  roomTitle.appendChild(document.createTextNode("Class - "+class_section))
+
+  mainDiv.appendChild(subjectTitle)
+  mainDiv.appendChild(roomTitle)
+  document.getElementById(parent).appendChild(mainDiv)
+}
+
+function select_class(id){
+  classElement = document.getElementById(id)
+  previousClassElement = document.getElementById(cur_class_selected)
+  if (!classElement.classList.contains("selected")){
+    if (previousClassElement != null){
+    previousClassElement.classList.remove("selected")
+    }
+    classElement.classList.add("selected")
+    cur_class_selected = id
+  }
+} 
+}
+</script>
+</head>
+<body>
+  <div id="topnav" class="topnav">
+    <a href="desk.html">Desk</a>
+    <a href="class.html">Class</a>
+    <a class="active" href="staff.html">Staff</a>
+    <span class="material-symbols-outlined" style="margin-left: auto;color:#FCF7F8;">search</span>
+    <input size="30px" type="text" style="border-radius:50px;padding-left: 10px;padding-right:10px;" placeholder="waiting for something to happen?">
+    <a class="imgButton" href="desk.html"><img height="30" src="logo.png"></a>
+  </div>
+
+  <!-- ~~Hamburgers in my head~~ -->
+  <div class="hamburger_menu" id="hamburger_menu">
+    <div style="height: 80px;">
+      <span class="material-symbols-outlined centered-x burger_button" id="open_burger">menu</span>
+      <div class="search" id="search_class">
+        <input style="float:left;margin-right:10px;font-size:20px;" size="20px" type="text" placeholder="Search Class...">
+        <span class="material-symbols-outlined schedule_sort" id="sort_class_time" style="font-size:32px !important;">schedule</span>
+      </div>
+    </div>
+    <div id="selector" class="selector">
+    </div>
+  </div>
+
+  <h style="position: absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;font-size: 48px;color:#333333;text-align: center;">We are working hard<br>to make your job<h1 style="white-space: nowrap;">Crystal <span style="color: #4d50f9;">Clear</span></h1>ERR: 401 Unauthorised</h>
+
+  <div class="bottomnav">
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="terms-of-service.html">TOS</a>
+    <a href="cookie-policy.html">Cookie Details</a>
+  </div>
+</body>
