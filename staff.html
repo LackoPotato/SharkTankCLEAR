@@ -11,16 +11,22 @@
   var burger_menu 
   var burger_selector
   var cur_class_selected = ""
-  var cur_task_selected = ""
+  var cur_admin_action_selected = ""
   var current_tab = "assign_tab"
   var active = false
   var students = {
-    "7E": [['Gordianus Richard',"ENG","2/29/2009"],'Anto Santo','Jesslyn Tangerine','Sophy Socks','Mr. Sunshine','craig','Mothemule'],
-    "8F": ['Richard Board','The Maverick','Auby','AD','Shnookums','Antroscopic Dissolution','Danial'],
-    "G9": ['Coros','Will Wood', 'Amin','Madihah','Isha','Hamanda','Sun Tsu','Sunny'],
+    "7E": [['Gordianus Richard', '02/29/2009', 'ENG', '0'], ['Anto Santo', '22/03/2009', 'POL', '0'], ['Jesslyn Tangerine', '12/07/2009', 'CHN', '1'], ['Sophy Socks', '15/02/2009', 'MYS', '1'], ['Mr.Sunshine', '02/05/2009', 'MYS', '1'], ['craig', '09/12/2008', 'UAE', '0'], ['Mothemule', '29/07/2009', 'ITA', '0']],
+    "8F": [['Richard Board', '17/02/2008', 'USA', '0'], ['The Maverick', '22/02/2008', 'CAN', '0'], ['Auby', '15/11/2008', 'IST', '1'], ['AD', '23/12/2007', 'MYS', '1'], ['Shnookums', '05/05/2008', 'IRL', '0'], ['Antroscopic Dissolution', '22/07/2008', 'QAT', '0'], ['Danial', '01/12/2008', 'FRA', '0']],
+    "G9": [['Coros', '25/07/2007', 'FIN', '0'], ['Will Wood', '19/07/2007', 'SWE', '0'], ['Amin', '18/11/2006', 'UAE', '0'], ['Madihah', '13/04/2007', 'CHN', '1'], ['Isha', '29/11/2006', 'MYS', '1'], ['Hamanda', '14/08/2007', 'AUS', '1'], ['Sun Tsu', '544BC', 'CHN', '0'], ['Sunny', '20/07/2006', 'USA', '0']],
   }
   var class_arrays = [['I&S','321','7E'],['I&S','213','8F'],['GEO','213','G9'],['GEO','213','G10'],['GEO','213','G9 (OPEN)'],['GEO','213','G10 (OPEN)'],['TEST','143','TST (Class)']]
-
+  var admin_actions = ['attendence','assign']
+  var admin_size = {
+    'attendence': "32px",
+    'assign': '350px'
+  }
+    
+  
 window.onload = function() {
   for (let i = 0; i < class_arrays.length;i++){
     cur_class = class_arrays[i]
@@ -30,6 +36,9 @@ window.onload = function() {
       cur_class_selected = i
     }
   }
+  for (let i = 0; i < admin_actions.length; i++){
+    document.getElementById(admin_actions[i]).addEventListener('click',function() {set_overall_action_from_baby_hamburger(admin_actions[i]);})
+  }
   burger_button = document.getElementById('open_burger')
   burger_menu = document.getElementById('hamburger_menu')
   burger_selector = document.getElementById('selector')
@@ -38,12 +47,13 @@ window.onload = function() {
   burger_selector.style = "width: 50%;opacity:100;"
   burger_button.addEventListener('click', function() {open_burgermenu()})
   document.getElementById("sort_class_time").addEventListener('click',function() {set_overall_class_from_hamburger(id);})
-  render_individual_item("Joshua Potatomancer","7E","2/29/2009","ENG","reportMe")
-  render_individual_item("Joshua Potatomancer","7E","2/29/2009","ENG","reportMe")
+  set_overall_class_from_hamburger(0)
 }
 
 function set_overall_class_from_hamburger(id){
   select_class(id); 
+  kill_your_children_now("reportMe")
+  render_element_arrays(students[class_arrays[id][2]],class_arrays[id][2])
 }
 
 function open_burgermenu(){
@@ -94,8 +104,19 @@ function select_class(id){
   console.log("SELECTED CLASS", id)
 } 
 
+function render_element_arrays(array,form_class){
+  for (let i = 0; i < array.length; i++){
+    person = array[i]
+    render_individual_item(person[0],form_class,person[1],person[2],person[3])
+  }
+}
 
-function render_individual_item(name, form_class,dateOfBirth,country,parent){
+function kill_your_children_now(parent){
+  parentNode = document.getElementById(parent)
+  while (parentNode.firstChild) {parentNode.removeChild(parentNode.firstChild);}
+}
+
+function render_individual_item(name, form_class,dateOfBirth,country,gender = 0,parent='reportMe'){
   mainDiv = document.createElement("div")
   mainDiv.classList.add("unsubmitted")
   mainDiv.style = " width: 80%;margin-left: 0%;"
@@ -103,7 +124,22 @@ function render_individual_item(name, form_class,dateOfBirth,country,parent){
   subDiv = document.createElement("div")
   subDiv.style = "margin-bottom: 10px;"
 
+  //<span class="material-symbols-outlined">female</span>
+
   nameElement = document.createElement("h")
+
+  genderIcon = document.createElement("span")
+  genderIcon.style = "font-size:32px !important;"
+  genderIcon.classList.add("material-symbols-outlined")
+  genderElement = document.createElement("h")
+  if (gender == 0){
+    genderIcon.innerText = "male"
+    genderElement.appendChild(document.createTextNode("Gender: Male"))
+  } else {
+    genderIcon.innerText = "female"
+    genderElement.appendChild(document.createTextNode("Gender: Female"))
+  }
+  nameElement.appendChild(genderIcon)
   nameElement.appendChild(document.createTextNode(name))
   nameElement.style = "display:inline-block;width: 65%; overflow-x: auto;white-space:nowrap"
 
@@ -118,11 +154,11 @@ function render_individual_item(name, form_class,dateOfBirth,country,parent){
   otherSubDiv = document.createElement("div")
   account_pfp = document.createElement("span")
   account_pfp.innerText = "account_circle"
-  account_pfp.style = "font-size: 124px !important;"
+  account_pfp.style = "font-size: 114px !important;"
   account_pfp.classList.add("material-symbols-outlined")
 
   otherSubDiv.appendChild(account_pfp)
-
+  
   otherOtherSubDiv = document.createElement("div")
   otherOtherSubDiv.style = "float:right;"
 
@@ -132,23 +168,42 @@ function render_individual_item(name, form_class,dateOfBirth,country,parent){
   place_of_birthElement = document.createElement("h")
   place_of_birthElement.appendChild(document.createTextNode("Place of Birth: "+country))
 
+
   otherOtherSubDiv.appendChild(form_classElement)
   otherOtherSubDiv.appendChild(document.createElement("br"))
   otherOtherSubDiv.appendChild(place_of_birthElement)
+  otherOtherSubDiv.appendChild(document.createElement("br"))
+  otherOtherSubDiv.appendChild(genderElement)
   otherOtherSubDiv.style = "font-size:32px;font-family: Arial, Helvetica, sans-serif;display:inline-block;max-width: 60%; overflow-x: auto;white-space:nowrap;float:right;"
 
   otherSubDiv.appendChild(otherOtherSubDiv)
+  
   mainDiv.appendChild(otherSubDiv)
 
   outerDiv = document.createElement("div")
+  outerDiv.style = "box-shadow: 0 4px 2px -2px gray;"
 
   check_marker = document.createElement("input")
   check_marker.type = "checkbox"
   check_marker.style = "width: 40px;height: 40px;float:right;margin-top:15px;"
+  check_marker.setAttribute("autocomplete","off")
   outerDiv.appendChild(check_marker)
   outerDiv.appendChild(mainDiv)
   document.getElementById(parent).appendChild(outerDiv)
 }
+
+//Baby hamburger selector
+
+function set_overall_action_from_baby_hamburger(id){
+  if (cur_admin_action_selected != id){
+    document.getElementById(id).style = "cursor:initial;height:"+admin_size[id]+";"
+    if (cur_admin_action_selected != ""){
+      document.getElementById(cur_admin_action_selected).style = ""
+    }
+  }
+  cur_admin_action_selected = id
+}
+
 </script>
 </head>
 <body>
@@ -174,12 +229,42 @@ function render_individual_item(name, form_class,dateOfBirth,country,parent){
     </div>
   </div>
 
-  <div style="width:65%;margin-left:75px;float:left;margin-right: 20px;max-height:100%; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;" id="reportMe">
+  <form>
+    <div style="width:65%;margin-left:75px;float:left;margin-right: 20px; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;max-height: 80%;overflow-y: scroll;" id="reportMe">
   </div>
-
+  <div style="position:fixed;width: 100%;right: -1050px;">
+    <div id="attendence" class="assign_tab_junk">
+      Attendence
+      <button type="submit" style="position:relative;bottom: 4px;border: none;font-size:16px;margin-bottom: 1000px;">Mark Present</button>
+    </div>
+    <div>
+      <div id="assign" class="assign_tab_junk blue">
+          Assign<br>
+          <select autocomplete="off">
+            <option value=""> Select Reward Point</option> 
+            <option value="0"> +3 </option>
+            <option value="0"> +2 </option>
+            <option value="1"> +1 </option>
+            <option value="2"> -1 </option>
+            <option value="3"> -2 </option>
+            <option value="2"> -3 </option>
+          </select>
+          <br><br>
+          Reason
+          <br>
+  
+          <textarea style="width: 95%;margin-left: 2.5%;height: 100px;font-family: Arial, Helvetica, sans-serif;" placeholder="Explaination for Reward Point" autocomplete="off"></textarea>
+  
+          <button type="submit" style="border: none;">Assign Reward Points</button>
+      </div>
+    </div>
+  </div>
+  </form>
+  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
   <div class="bottomnav">
     <a href="privacy-policy.html">Privacy Policy</a>
     <a href="terms-of-service.html">TOS</a>
     <a href="cookie-policy.html">Cookie Details</a>
   </div>
+  <br>
 </body>

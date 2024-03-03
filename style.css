@@ -320,7 +320,7 @@ a.imgButton:hover{
 }
 
 .unsubmitted{
-  background-color: #de6fd3;
+  background-color: #333333;
   height: 64px;
   border-radius: 10px;
   width: 90%;
@@ -334,4 +334,21 @@ a.imgButton:hover{
 
 .unsubmitted:hover{
   height: 196px;
+}
+
+.assign_tab_junk{
+  font-size:32px;
+  width:25%;
+  height: 32px;
+  background-color: #368cfc;
+  color: #fff;;
+  padding:10px 10px 10px 10px;
+  overflow-y:scroll;
+  transition: height 200ms cubic-bezier(.97,-0.06,.27,1.55);
+  cursor: pointer;
+}
+
+.blue{
+  background-color: #4d50f9;
+  color:#FCF7F8;
 }
