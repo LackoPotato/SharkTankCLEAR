@@ -49,7 +49,8 @@
     }
 
     set_tab_current(tab_list[0])
-
+    document.getElementById("start_date").disabled = false
+    document.getElementById("end_date").disabled = false
     disable_start_date()
     disable_end_date()
     task_set(0)
@@ -62,6 +63,7 @@
     set_task_view_title(id);
     set_tasks(class_data_arrays[id]);
     select_task('0taskViewSelection')
+    task_set(0)
   }
 
   function open_burgermenu(){
@@ -195,29 +197,51 @@
 
 
     function set_content_view_task(task,total_stud,parent="view_task_tab_main"){
-      console.log(document.getElementById(parent+"_title"))
-      document.getElementById(parent+"_title").innerText = task[0]
-      document.getElementById(parent+"_complete").innerText = task[1]
-      document.getElementById(parent+"_incomplete").innerText = parseInt(total_stud) - parseInt(task[1])
-      document.getElementById(parent+"_assigned").innerText = task[2]
-      document.getElementById(parent+"_due").innerText = task[3]
+      if (task === undefined){
+        console.log("EMPTY CLASS")
+        document.getElementById(parent+"_title").innerText = ""
+        document.getElementById(parent+"_complete").innerText = ""
+        document.getElementById(parent+"_incomplete").innerText = ""
+        document.getElementById(parent+"_assigned").innerText = ""
+        document.getElementById(parent+"_due").innerText = ""
+        text_node = document.getElementById(parent+"_info")
+        while (text_node.firstChild) {text_node.removeChild(text_node.firstChild);}
+        
+      } else {
+        console.log(document.getElementById(parent+"_title"))
+        document.getElementById(parent+"_title").innerText = task[0]
+        document.getElementById(parent+"_complete").innerText = task[1]
+        document.getElementById(parent+"_incomplete").innerText = parseInt(total_stud) - parseInt(task[1])
+        document.getElementById(parent+"_assigned").innerText = task[2]
+        document.getElementById(parent+"_due").innerText = task[3]
 
-      text_node = document.getElementById(parent+"_info")
-      while (text_node.firstChild) {text_node.removeChild(text_node.firstChild);}
-      split_linebreaks = task[4].split("\n")
-      for (let i = 0; i < split_linebreaks.length; i++){
-        document.getElementById(parent+"_info").appendChild(document.createTextNode(split_linebreaks[i]))
-        document.getElementById(parent+"_info").appendChild(document.createElement("br"))
+        text_node = document.getElementById(parent+"_info")
+        while (text_node.firstChild) {text_node.removeChild(text_node.firstChild);}
+        split_linebreaks = task[4].split("\n")
+        for (let i = 0; i < split_linebreaks.length; i++){
+          document.getElementById(parent+"_info").appendChild(document.createTextNode(split_linebreaks[i]))
+          document.getElementById(parent+"_info").appendChild(document.createElement("br"))
+        }
       }
     }
 
+    //Implementation of Copy Assignment
+    function copy_task(task_empty,task_data){
+      set_tab_current("assign_tab")
+      task_empty[0].value = task_data[0].innerText
+      information = task_data[1].children
+      for (let i = 0; i < task_data[1].childElementCount; i++){
+        task_empty[1].value += information[i].previousSibling.textContent + "\n"
+      }
+    }
     //Implementation of Task Submit
 
     function validate_dats(){
-      checked = document.getElementById("assign_to_students").checked
+      checked = document.getElementById("assign_all").checked
+      node = document.getElementById("assign_to_students")
       if (checked){
         node.classList.add("disabled")
-        node.style = "color:#333333;"
+        node.style = ""
       } else {
         node.classList.remove("disabled")
         node.style = ""
@@ -347,8 +371,8 @@
         <div class="bodyMainTab" id="assign_tab_main">
           <form onsubmit="add_task(document.getElementsByName('taskData'));return false;">
             <div style="float:left;font-size:48px;float:left;"><h id="task_view_subject">Assign</h></div>
-            <input name="taskData" size="23px" type="text" placeholder="Title" maxlength="255" style="float:left;margin-left:10px;font-size:32px;border-radius: 5px;margin-top: 5px;font-family: bungee;margin-bottom: 10px;" required></input>
-            <textarea name="taskData" placeholder="Task Information" style="font-size:20px;font-family:Arial, Helvetica, sans-serif;margin-top: 10px;width:98%;height: 150px;resize:none;" required></textarea>
+            <input autocomplete="off" name="taskData" size="23px" type="text" placeholder="Title" maxlength="255" style="float:left;margin-left:10px;font-size:32px;border-radius: 5px;margin-top: 5px;font-family: bungee;margin-bottom: 10px;" required></input>
+            <textarea autocomplete="off" name="taskData" placeholder="Task Information" style="font-size:20px;font-family:Arial, Helvetica, sans-serif;margin-top: 10px;width:98%;height: 150px;resize:none;" required></textarea>
             <div style="height:100px">
               <div style="background-color: #333333;width: 60%;height: 100px;margin-top: 10px;font-size: 24px;padding: 5px 5px 5px 5px;float:left;margin-right: 20px;">
                 <h style="height: 24px;">Upload</h>
@@ -362,7 +386,7 @@
                   <span class="material-symbols-outlined" style="margin-left:5px;font-size: 64px !important;float:left;margin-bottom: 20px;">person</span>
                   <h><br>assign to students</h>
                 </div>
-                <input name="taskData" type="checkbox" id="assign_all" onclick="validate_dats();"><label>Assign All</label></input>
+                <input name="taskData" type="checkbox" id="assign_all" onclick="validate_dats();" autocomplete="off"><label>Assign All</label></input>
               </div>
             </div>
             <br><br>
@@ -374,27 +398,27 @@
             <div>
               <div style="float:left;">
                 <label for="start">Start date:</label><br>
-                <input pattern="\d{2}-\d{2}-\d{4}" name="taskData" id="start_date" type="date" required></input>
+                <input autocomplete="off" pattern="\d{2}-\d{2}-\d{4}" name="taskData" id="start_date" type="date" required></input>
               </div>
               <h style="float:left;margin-left: 10px;margin-right: 10px;">----></h>
               <div>
                 <label for="start">End date:</label><br>
-                <input pattern="\d{2}-\d{2}-\d{4}" name="taskData" style="margin-left:60px" type="date" id="end_date" required></input>
+                <input autocomplete="off" pattern="\d{2}-\d{2}-\d{4}" name="taskData" style="margin-left:60px" type="date" id="end_date" required></input>
               </div>
             </div>
             <br>
             <div>
-              <input name="taskData" type="checkbox" id="assign_now" onclick="disable_start_date();"><label style="margin-right: 30px;">Assign now</label></input>
-              <input name="taskData" type="checkbox" id="assign_end" onclick="disable_end_date();"><label>No due date</label></input>
+              <input name="taskData" type="checkbox" id="assign_now" onclick="disable_start_date();" autocomplete="off"><label style="margin-right: 30px;">Assign now</label></input>
+              <input name="taskData" type="checkbox" id="assign_end" onclick="disable_end_date();" autocomplete="off"><label>No due date</label></input>
             </div>
         </form>
         </div>
 
         <!--View task tab-->
         <div class="bodyMainTab" id="view_task_tab_main">
-          <div style="float:left;font-size:48px;float:left;"><h id="view_task_tab_main_title">Joshua Sandwich Man SJ</h></div>
+          <div style="float:left;font-size:48px !important;float:left;width: 100%;" ><h id="view_task_tab_main_title" name="taskDataView">Joshua Sandwich Man SJ</h><h style="float: right;"><span class="material-symbols-outlined" style="font-size:48px !important;cursor: pointer;" onclick="copy_task(document.getElementsByName('taskData'),document.getElementsByName('taskDataView'));">file_copy</span></h></div>
           <br><br><br>
-          <div style="background-color: #333333;padding: 10px 10px 10px 10px;overflow: scroll;height: 150px;font-family: Arial, Helvetica, sans-serif;"><p id="view_task_tab_main_info">Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ</p></div>
+          <div style="background-color: #333333;padding: 10px 10px 10px 10px;overflow: scroll;height: 150px;font-family: Arial, Helvetica, sans-serif;"><p name="taskDataView" id="view_task_tab_main_info">Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ Joshua Sandwich Man SJ</p></div>
           <br>
           <div>
             <div style="background-color: #333333;width: 50%;font-size: 32px ;padding: 5px;float:left;height: 100px;">Resources<br>
@@ -405,11 +429,11 @@
             <div style="background-color: #333333;width: 45%;font-size: 32px ;padding: 5px;margin-left: auto;height: 100px;position: relative; ">
               <div style="margin-top:5px;width: 100%;">
                 <h>Assigned - </h>
-                <h id="view_task_tab_main_assigned">1/4/3</h>
+                <h id="view_task_tab_main_assigned" name="taskDataView">1/4/3</h>
               </div>
               <div style="position: absolute;bottom:0px;margin-bottom:5px;width: 100%;">
                 <h>Due - </h>
-                <h id="view_task_tab_main_due">1/4/3</h>
+                <h id="view_task_tab_main_due" name="taskDataView">1/4/3</h>
               </div>
             </div>
           </div>
@@ -429,7 +453,7 @@
         </div>
 
         <div class="bodyMainTab" id="view_stud_tab_main">
-
+          
         </div>
       </div>
       <!-- I will organise my style sheets, I will organize my style sheets, i will organize my style sheets i will organise my style sheets. i will organise my style sheets, i will organise my style sheets, i will organise my style sheets-->
