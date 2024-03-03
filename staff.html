@@ -14,11 +14,14 @@
   var cur_task_selected = ""
   var current_tab = "assign_tab"
   var active = false
-
+  var students = {
+    "7E": [['Gordianus Richard',"ENG","2/29/2009"],'Anto Santo','Jesslyn Tangerine','Sophy Socks','Mr. Sunshine','craig','Mothemule'],
+    "8F": ['Richard Board','The Maverick','Auby','AD','Shnookums','Antroscopic Dissolution','Danial'],
+    "G9": ['Coros','Will Wood', 'Amin','Madihah','Isha','Hamanda','Sun Tsu','Sunny'],
+  }
   var class_arrays = [['I&S','321','7E'],['I&S','213','8F'],['GEO','213','G9'],['GEO','213','G10'],['GEO','213','G9 (OPEN)'],['GEO','213','G10 (OPEN)'],['TEST','143','TST (Class)']]
-  var class_data_arrays = [[12,['Green Planting',11,"1/2/24","20/2/4","Plant plants \ncause planted plants are green"],['Farming',10,"1/12/23","No Due Date","Farm? Farm! \nFarming Farm Farm Farm Farming?"],['Effects of Overfarming',11,"23/11/23","No Due Date","There are effects...\n\nthere are a ton"],['Criteria D Practice',9,"18/11/23","No Due Date","Practice makes perfect\n\nMost of the times..."]],[23,['Jim Crow Laws',18,"0/0/0","No Due Date","I am running out of example descriptions"],['Montgomery Bus Protest',20,"1/4/30","No Due Date","Example Description"],['I have a dream',22,"1/1/1","This format hurts to write"]],[12,['Rivers',11,"12/3/24","No Due Date","Rivers are rivers?"],['River Management',11,"23/2/24","5/3/24","Forgiveness? Forgiveness is not given, it is earned."],['Dams Research Task',10,"10/2/24","No Due Date","Research Dams please."],['Yangtze River Debate',9,"-1/32/98","Dams block Flow?"]],[],[],[],[],[],[],[]]
 
-  window.onload = function() {
+window.onload = function() {
   for (let i = 0; i < class_arrays.length;i++){
     cur_class = class_arrays[i]
     render_selector_element(i,cur_class[0],cur_class[1],cur_class[2])
@@ -27,7 +30,6 @@
       cur_class_selected = i
     }
   }
-  console.log(class_data_arrays)
   burger_button = document.getElementById('open_burger')
   burger_menu = document.getElementById('hamburger_menu')
   burger_selector = document.getElementById('selector')
@@ -36,9 +38,11 @@
   burger_selector.style = "width: 50%;opacity:100;"
   burger_button.addEventListener('click', function() {open_burgermenu()})
   document.getElementById("sort_class_time").addEventListener('click',function() {set_overall_class_from_hamburger(id);})
+  render_individual_item("Joshua Potatomancer","7E","2/29/2009","ENG","reportMe")
+  render_individual_item("Joshua Potatomancer","7E","2/29/2009","ENG","reportMe")
+}
 
-
-  function set_overall_class_from_hamburger(id){
+function set_overall_class_from_hamburger(id){
   select_class(id); 
 }
 
@@ -87,7 +91,63 @@ function select_class(id){
     classElement.classList.add("selected")
     cur_class_selected = id
   }
+  console.log("SELECTED CLASS", id)
 } 
+
+
+function render_individual_item(name, form_class,dateOfBirth,country,parent){
+  mainDiv = document.createElement("div")
+  mainDiv.classList.add("unsubmitted")
+  mainDiv.style = " width: 80%;margin-left: 0%;"
+
+  subDiv = document.createElement("div")
+  subDiv.style = "margin-bottom: 10px;"
+
+  nameElement = document.createElement("h")
+  nameElement.appendChild(document.createTextNode(name))
+  nameElement.style = "display:inline-block;width: 65%; overflow-x: auto;white-space:nowrap"
+
+  date_submittedElement = document.createElement("h")
+  date_submittedElement.appendChild(document.createTextNode(form_class))
+  date_submittedElement.style = "float: right;"
+
+  subDiv.appendChild(nameElement)
+  subDiv.appendChild(date_submittedElement)
+  mainDiv.appendChild(subDiv)
+
+  otherSubDiv = document.createElement("div")
+  account_pfp = document.createElement("span")
+  account_pfp.innerText = "account_circle"
+  account_pfp.style = "font-size: 124px !important;"
+  account_pfp.classList.add("material-symbols-outlined")
+
+  otherSubDiv.appendChild(account_pfp)
+
+  otherOtherSubDiv = document.createElement("div")
+  otherOtherSubDiv.style = "float:right;"
+
+  form_classElement = document.createElement("h")
+  form_classElement.appendChild(document.createTextNode("Date of birth: "+dateOfBirth))
+
+  place_of_birthElement = document.createElement("h")
+  place_of_birthElement.appendChild(document.createTextNode("Place of Birth: "+country))
+
+  otherOtherSubDiv.appendChild(form_classElement)
+  otherOtherSubDiv.appendChild(document.createElement("br"))
+  otherOtherSubDiv.appendChild(place_of_birthElement)
+  otherOtherSubDiv.style = "font-size:32px;font-family: Arial, Helvetica, sans-serif;display:inline-block;max-width: 60%; overflow-x: auto;white-space:nowrap;float:right;"
+
+  otherSubDiv.appendChild(otherOtherSubDiv)
+  mainDiv.appendChild(otherSubDiv)
+
+  outerDiv = document.createElement("div")
+
+  check_marker = document.createElement("input")
+  check_marker.type = "checkbox"
+  check_marker.style = "width: 40px;height: 40px;float:right;margin-top:15px;"
+  outerDiv.appendChild(check_marker)
+  outerDiv.appendChild(mainDiv)
+  document.getElementById(parent).appendChild(outerDiv)
 }
 </script>
 </head>
@@ -114,7 +174,8 @@ function select_class(id){
     </div>
   </div>
 
-  <h style="position: absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;font-size: 48px;color:#333333;text-align: center;">We are working hard<br>to make your job<h1 style="white-space: nowrap;">Crystal <span style="color: #4d50f9;">Clear</span></h1>ERR: 401 Unauthorised</h>
+  <div style="width:65%;margin-left:75px;float:left;margin-right: 20px;max-height:100%; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;" id="reportMe">
+  </div>
 
   <div class="bottomnav">
     <a href="privacy-policy.html">Privacy Policy</a>

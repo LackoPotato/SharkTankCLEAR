@@ -303,12 +303,35 @@ a.imgButton:hover{
   display:none;
   background-color: #4d50f9;
   width:100%;
-  max-height:65%;
+  max-height:490px;
   padding:10px 10px 10px 10px;
   border-radius: 0px 0px 10px 10px;
   color:#FCF7F8;
+  overflow-y:scroll;
 }
 
 .just_override_it{
   font-size: 64px !important;
+}
+
+.submitted{
+  color: #333333 !important;
+  background-color: #FCF7F8 !important;
+}
+
+.unsubmitted{
+  background-color: #de6fd3;
+  height: 64px;
+  border-radius: 10px;
+  width: 90%;
+  margin-left: 5%;
+  font-size: 48px;
+  padding: 5px;
+  margin-bottom: 10px;
+  overflow-y: hidden;
+  transition: height 200ms cubic-bezier(.97,-0.06,.27,1.55);
+}
+
+.unsubmitted:hover{
+  height: 196px;
 }
