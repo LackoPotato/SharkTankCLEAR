@@ -298,11 +298,8 @@
         month = date_purging.substring(date_purging.indexOf("-")+1,date_purging.length)
         end_date = day+"/"+month+"/"+year
       }
-      unsubmitted_students_thing = []
-      for (let i = 0; i < students[class_arrays[cur_class_selected][2]].length;i++){
-        unsubmitted_students_thing.push(i)
-      }
-      task = [title,0,start_date,end_date,information,[],unsubmitted_students_thing]
+
+      task = [title,[],start_date,end_date,information]
       class_data_arrays[cur_class_selected].splice(1,0,task)
       set_overall_class_from_hamburger(cur_class_selected)
 
