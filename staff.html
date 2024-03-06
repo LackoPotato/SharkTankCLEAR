@@ -20,10 +20,11 @@
     "G9": [['Coros', '25/07/2007', 'FIN', '0'], ['Will Wood', '19/07/2007', 'SWE', '0'], ['Amin', '18/11/2006', 'UAE', '0'], ['Madihah', '13/04/2007', 'CHN', '1'], ['Isha', '29/11/2006', 'MYS', '1'], ['Hamanda', '14/08/2007', 'AUS', '1'], ['Sun Tsu', '544BC', 'CHN', '0'], ['Sunny', '20/07/2006', 'USA', '0']],
   }
   var class_arrays = [['I&S','321','7E'],['I&S','213','8F'],['GEO','213','G9'],['GEO','213','G10'],['GEO','213','G9 (OPEN)'],['GEO','213','G10 (OPEN)'],['TEST','143','TST (Class)']]
-  var admin_actions = ['attendence','assign']
+  var admin_actions = ['attendence','assign','detention']
   var admin_size = {
     'attendence': "32px",
-    'assign': '350px'
+    'assign': '325px',
+    'detention': '375px',
   }
     
   
@@ -111,9 +112,19 @@ function render_element_arrays(array,form_class){
   }
 }
 
+
+function select_all_children(){
+  children = document.getElementsByName("selectedChildren")
+  for (let i = 0; i < children.length; i++){
+    children[i].checked = 'true'
+  }
+}
+
 function kill_your_children_now(parent){
   parentNode = document.getElementById(parent)
-  while (parentNode.firstChild) {parentNode.removeChild(parentNode.firstChild);}
+  while (parentNode.firstChild) {
+    parentNode.removeChild(parentNode.firstChild)
+  }
 }
 
 function render_individual_item(name, form_class,dateOfBirth,country,gender = 0,parent='reportMe'){
@@ -186,7 +197,9 @@ function render_individual_item(name, form_class,dateOfBirth,country,gender = 0,
   check_marker = document.createElement("input")
   check_marker.type = "checkbox"
   check_marker.style = "width: 40px;height: 40px;float:right;margin-top:15px;"
+  check_marker.setAttribute("name","selectedChildren")
   check_marker.setAttribute("autocomplete","off")
+  check_marker.setAttribute("id", name)
   outerDiv.appendChild(check_marker)
   outerDiv.appendChild(mainDiv)
   document.getElementById(parent).appendChild(outerDiv)
@@ -204,6 +217,13 @@ function set_overall_action_from_baby_hamburger(id){
   cur_admin_action_selected = id
 }
 
+//Send data :P UNUSED PLEASE BURN
+
+function encodeAndPassData(location = "report.html"){
+  url = location+'?class='+ encodeURIComponent(cur_class_selected);
+  document.location.href = url;
+  console.log(url,document.location.href)
+}
 </script>
 </head>
 <body>
@@ -215,52 +235,83 @@ function set_overall_action_from_baby_hamburger(id){
     <input size="30px" type="text" style="border-radius:50px;padding-left: 10px;padding-right:10px;" placeholder="waiting for something to happen?">
     <a class="imgButton" href="desk.html"><img height="30" src="logo.png"></a>
   </div>
-
-  <!-- ~~Hamburgers in my head~~ -->
-  <div class="hamburger_menu" id="hamburger_menu">
-    <div style="height: 80px;">
-      <span class="material-symbols-outlined centered-x burger_button" id="open_burger">menu</span>
-      <div class="search" id="search_class">
-        <input style="float:left;margin-right:10px;font-size:20px;" size="20px" type="text" placeholder="Search Class...">
-        <span class="material-symbols-outlined schedule_sort" id="sort_class_time" style="font-size:32px !important;">schedule</span>
+    <!-- ~~Hamburgers in my head~~ -->
+    <div class="hamburger_menu" id="hamburger_menu">
+      <div style="height: 80px;">
+        <span class="material-symbols-outlined centered-x burger_button" id="open_burger">menu</span>
+        <div class="search" id="search_class">
+          <input style="float:left;margin-right:10px;font-size:20px;" size="20px" type="text" placeholder="Search Class...">
+          <span class="material-symbols-outlined schedule_sort" id="sort_class_time" style="font-size:32px !important;">schedule</span>
+        </div>
+      </div>
+      <div id="selector" class="selector">
       </div>
     </div>
-    <div id="selector" class="selector">
-    </div>
-  </div>
 
-  <form>
-    <div style="width:65%;margin-left:75px;float:left;margin-right: 20px; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;max-height: 80%;overflow-y: scroll;" id="reportMe">
-  </div>
-  <div style="position:fixed;width: 100%;right: -1050px;">
-    <div id="attendence" class="assign_tab_junk">
-      Attendence
-      <button type="submit" style="position:relative;bottom: 4px;border: none;font-size:16px;margin-bottom: 1000px;">Mark Present</button>
-    </div>
-    <div>
-      <div id="assign" class="assign_tab_junk blue">
-          Assign<br>
-          <select autocomplete="off">
-            <option value=""> Select Reward Point</option> 
-            <option value="0"> +3 </option>
-            <option value="0"> +2 </option>
-            <option value="1"> +1 </option>
-            <option value="2"> -1 </option>
-            <option value="3"> -2 </option>
-            <option value="2"> -3 </option>
-          </select>
-          <br><br>
+    <form>
+
+      <div style="width:65%;margin-left:75px;float:left;margin-right: 20px;scroll-padding-bottom: 10px; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;max-height: 80vh;overflow-y: scroll;">
+        <div id="noDelete">
+          <div class="button" onclick="encodeAndPassData()">Make Report</div>
+          <div class="button" style="float: right;" onclick="select_all_children();">Select All</div>
+        </div>
+        <br><br>
+        <div id="reportMe" style="max-height: 72vh;overflow-y: scroll;">
+
+        </div>
+      </div>
+
+    <div style="position:fixed;width: auto;top:50px;right: 0px;">
+      <div id="attendence" class="assign_tab_junk">
+        Attendence
+        <button type="submit" style="position:relative;bottom: 4px;border: none;font-size:16px;margin-bottom: 1000px;">Mark Present</button>
+      </div>
+      <div>
+        <div id="assign" class="assign_tab_junk blue">
+            Assign<br>
+            <select autocomplete="off">
+              <option value=""> Select Reward Point</option> 
+              <option value="0"> +3 </option>
+              <option value="0"> +2 </option>
+              <option value="1"> +1 </option>
+              <option value="2"> -1 </option>
+              <option value="3"> -2 </option>
+              <option value="2"> -3 </option>
+            </select>
+            <br><br>
+            Reason
+            <br>
+    
+            <textarea style="width: 95%;margin-left: 2.5%;height: 100px;font-family: Arial, Helvetica, sans-serif;" placeholder="Explaination for Reward Point" autocomplete="off"></textarea>
+    
+            <button type="submit" style="border: none;">Assign Reward Points</button>
+        </div>
+      </div>
+      <div>
+        <div id="detention" class="assign_tab_junk">
+          Detention<br>
+          <div>
+            <label style="font-size: 24px;">Date</label>
+            <input style="bottom: 5px;position:relative;" type="datetime-local"></input>
+          </div>
+          <div>
+            <label style="font-size: 24px;">Time</label>
+            <input type="time" style="bottom: 5px;position:relative;"></input>
+          </div>
+          <br>
           Reason
           <br>
   
-          <textarea style="width: 95%;margin-left: 2.5%;height: 100px;font-family: Arial, Helvetica, sans-serif;" placeholder="Explaination for Reward Point" autocomplete="off"></textarea>
+          <textarea style="width: 95%;margin-left: 2.5%;height: 100px;font-family: Arial, Helvetica, sans-serif;" placeholder="Explaination for Detention" autocomplete="off"></textarea>
   
-          <button type="submit" style="border: none;">Assign Reward Points</button>
+          <button type="submit" style="border: none;">Assign Detention</button>
+        </div>
       </div>
     </div>
-  </div>
+
+
   </form>
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
   <div class="bottomnav">
     <a href="privacy-policy.html">Privacy Policy</a>
     <a href="terms-of-service.html">TOS</a>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="4.png">
+  <title>Clear | Staff</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script>
+  var burger_button
+  var burger_menu 
+  var burger_selector
+  var cur_class_selected = ""
+  var cur_student_selected = ''
+  var current_tab = "assign_tab"
+  var active = false
+  var students = {
+    "7E": [['Gordianus Richard', '02/29/2009', 'ENG', '0'], ['Anto Santo', '22/03/2009', 'POL', '0'], ['Jesslyn Tangerine', '12/07/2009', 'CHN', '1'], ['Sophy Socks', '15/02/2009', 'MYS', '1'], ['Mr.Sunshine', '02/05/2009', 'MYS', '1'], ['craig', '09/12/2008', 'UAE', '0'], ['Mothemule', '29/07/2009', 'ITA', '0']],
+    "8F": [['Richard Board', '17/02/2008', 'USA', '0'], ['The Maverick', '22/02/2008', 'CAN', '0'], ['Auby', '15/11/2008', 'IST', '1'], ['AD', '23/12/2007', 'MYS', '1'], ['Shnookums', '05/05/2008', 'IRL', '0'], ['Antroscopic Dissolution', '22/07/2008', 'QAT', '0'], ['Danial', '01/12/2008', 'FRA', '0']],
+    "G9": [['Coros', '25/07/2007', 'FIN', '0'], ['Will Wood', '19/07/2007', 'SWE', '0'], ['Amin', '18/11/2006', 'UAE', '0'], ['Madihah', '13/04/2007', 'CHN', '1'], ['Isha', '29/11/2006', 'MYS', '1'], ['Hamanda', '14/08/2007', 'AUS', '1'], ['Sun Tsu', '544BC', 'CHN', '0'], ['Sunny', '20/07/2006', 'USA', '0']],
+  }
+
+  var students_grades = {'7E': {'Gordianus Richard': [5, 2, 7, 5, 4], 'Anto Santo': [6, 4, 6, 5, 5], 'Jesslyn Tangerine': [6, 5, 3, 5, 4], 'Sophy Socks': [8, 5, 6, 5, 6], 'Mr. Sunshine': [8, 2, 8, 7, 6], 'craig': [4, 7, 3, 4, 4], "Mothemule'": [4, 6, 4, 7, 5]}, '8F': {'Richard Board': [7, 7, 5, 6, 6], 'The Maverick': [5, 7, 3, 7, 5], 'Auby': [5, 8, 6, 7, 6], 'AD': [6, 4, 4, 4, 4], 'Shnookums': [8, 7, 5, 6, 6], 'Antroscopic Dissolution': [4, 5, 4, 8, 5], "Danial'": [5, 2, 5, 5, 4]}, 'G9': {'Coros': [4, 7, 8, 5, 6], "Will Wood', 'Amin": [6, 3, 7, 4, 5], 'Madihah': [6, 7, 5, 5, 5], 'Isha': [6, 8, 3, 5, 5], 'Hamanda': [7, 6, 3, 7, 5], 'Sun Tsu': [5, 5, 8, 6, 6], "Sunny'": [8, 4, 4, 6, 5]}}
+  var class_arrays = [['I&S','321','7E'],['I&S','213','8F'],['GEO','213','G9'],['GEO','213','G10'],['GEO','213','G9 (OPEN)'],['GEO','213','G10 (OPEN)'],['TEST','143','TST (Class)']]
+
+  var read_users = {}
+    
+  
+window.onload = function() {
+  for (let i = 0; i < class_arrays.length;i++){
+    cur_class = class_arrays[i]
+    render_selector_element(i,cur_class[0],cur_class[1],cur_class[2])
+    if (i === 0){
+      document.getElementById(i).classList.add("selected")
+      cur_class_selected = i
+    }
+  }
+  burger_button = document.getElementById('open_burger')
+  burger_menu = document.getElementById('hamburger_menu')
+  burger_selector = document.getElementById('selector')
+  search_class = document.getElementById('search_class')
+  
+  burger_selector.style = "width: 50%;opacity:100;"
+  burger_button.addEventListener('click', function() {open_burgermenu()})
+  document.getElementById("sort_class_time").addEventListener('click',function() {set_overall_class_from_hamburger(id);})
+  console.log(read_users)
+  dataRead = read()
+  console.log(dataRead)
+  if (dataRead != false){
+    set_overall_class_from_hamburger(dataRead.class)
+  } else {
+    set_overall_class_from_hamburger(0)
+  }
+}
+
+function set_overall_class_from_hamburger(id){
+  select_class(id);
+  kill_your_children_now('student_selector')
+  stud = students[class_arrays[cur_class_selected][2]]
+  render_students(stud)
+  select_student(stud[0][0])
+  change_the_thing(stud[0][0])
+}
+
+function render_students(students){
+  for (let i = 0; i < students.length; i++){
+    studentInfo = students[i]
+    render_student_element(studentInfo[0],studentInfo[3],class_arrays[cur_class_selected][2])
+  }
+}
+
+function open_burgermenu(){
+  active = ! active
+  if (active){
+    burger_button.style = "transform: rotate(90deg) translate(0%, 0);left:90%;"
+    burger_menu.style = "width:30%;"
+    burger_selector.style = "margin-left:5%;opacity:100;"
+    search_class.style = "margin-left:5%;"
+    
+  } else {
+    burger_button.style = "transform: rotate(0deg) translate(-50%, 0);"
+    burger_menu.style = ""
+    search_class.style = ""
+    burger_selector.style = "width:50%;opacity:100;"
+  }
+}
+
+function render_selector_element(id=0,subject="TEST",room="NaN",class_section="9X",parent="selector"){
+  mainDiv = document.createElement("div")
+  mainDiv.addEventListener('click', function() {set_overall_class_from_hamburger(id);})
+  mainDiv.classList.add("class_element")
+  mainDiv.setAttribute("id",id)
+
+  subjectTitle = document.createElement("h")
+  subjectTitle.appendChild(document.createTextNode(subject))
+  
+  roomTitle = document.createElement("p")
+  roomTitle.appendChild(document.createTextNode("Room - " + room))
+  roomTitle.appendChild(document.createElement("br"))
+  roomTitle.appendChild(document.createTextNode("Class - "+class_section))
+
+  mainDiv.appendChild(subjectTitle)
+  mainDiv.appendChild(roomTitle)
+  document.getElementById(parent).appendChild(mainDiv)
+}
+
+function select_class(id){
+  classElement = document.getElementById(id)
+  previousClassElement = document.getElementById(cur_class_selected)
+  if (!classElement.classList.contains("selected")){
+    if (previousClassElement != null){
+    previousClassElement.classList.remove("selected")
+    }
+    classElement.classList.add("selected")
+    cur_class_selected = id
+  }
+  console.log("SELECTED CLASS", id)
+} 
+
+function render_student_element(name,female,formclass,parent='student_selector'){
+  //<div class="task_view_element_type_select" id="Shadow the Hedgehog">
+  //  <div class="task_view_element_type_select_child_name">
+  //    <span style="font-size: 28px !important;" class="material-symbols-outlined">male</span>
+  //    Shadow the Hedgehog
+  //</div>
+  //  <h style="float:right;font-size: 32px;margin-top: 10px;margin-right: 10px;">7E</h>
+  //</div>
+  
+  mainDiv = document.createElement('div')
+  mainDiv.setAttribute("id",name)
+  mainDiv.classList.add('task_view_element_type_select')
+  mainDiv.setAttribute('onclick','on_select_student("'+name+'")')
+
+  nameDiv = document.createElement('div')
+  nameDiv.classList.add('task_view_element_type_select_child_name')
+  
+  genderSpan = document.createElement('span')
+  genderSpan.style = "font-size: 28px !important;"
+  genderSpan.classList.add('material-symbols-outlined')
+
+  if (female==1){
+    genderSpan.innerText = 'female'
+  } else {
+    genderSpan.innerText = 'male'
+  }
+  
+  nameDiv.append(genderSpan)
+  nameDiv.append(document.createTextNode(name))
+  mainDiv.append(nameDiv)
+
+  classElement = document.createElement('h')
+  classElement.style = "float:right;font-size: 32px;margin-top: 10px;margin-right: 10px;"
+  classElement.innerText = formclass
+
+  mainDiv.append(classElement)
+  document.getElementById(parent).append(mainDiv)
+}
+
+function change_displayed_info(name,term,form,grade){
+  informationElements = document.getElementsByName("student_info")
+  informationElements[0].innerText = name
+  informationElements[1].innerText = term
+  informationElements[2].innerText = form
+
+  grades = document.getElementsByName("grade_view_thingy")
+  for (let i = 0; i < grade.length; i++){
+    grades[i].value = grade[i]
+  }
+} 
+
+function on_select_student(name){
+  select_student(name)
+  change_the_thing(name)
+}
+
+function change_the_thing(name){
+  grade = students_grades[class_arrays[cur_class_selected][2]][name]
+  change_displayed_info(name,'Term 2',class_arrays[cur_class_selected][2],grade)
+  update_all_bars()
+}
+
+function update_all_bars(){
+  thingies = ['a','b','c','d','t']
+  for (let i = 0; i < thingies.length; i++){
+    change_height_bar(thingies[i])
+  }
+}
+
+function select_student(name){
+  if (name != cur_student_selected){
+    if (document.getElementById(cur_student_selected) != null){
+      document.getElementById(cur_student_selected).classList.remove('selected')
+    }
+    document.getElementById(name).classList.add('selected')
+    cur_student_selected = name
+  }
+}
+
+function on_save_data(name){
+  grades = document.getElementsByName('grade_view_thingy')
+  compiledGrades = []
+  for (let i = 0; i < grades.length; i++){
+    compiledGrades.push(grades[i].value)
+  }
+  students_grades[class_arrays[cur_class_selected][2]][name] = compiledGrades
+}
+
+//Read Query Data (UNUSED MAY BE OF HELP LATER ON)
+function read(){
+  url = document.location.href
+  if (url != url.split('?')[0]){
+    var params = url.split('?')[1].split('&'),
+        data = {}, tmp;
+    for (var i = 0, l = params.length; i < l; i++) {
+          tmp = params[i].split('=');
+          data[tmp[0]] = tmp[1];
+    }
+    return data
+  } else {
+    return false
+  }
+}
+function kill_your_children_now(parent){
+  parentNode = document.getElementById(parent)
+  while (parentNode.firstChild) {
+    parentNode.removeChild(parentNode.firstChild)
+  }
+}
+
+function change_height_bar(criteria){
+  value = document.getElementById(criteria).value
+  console.log(value)
+  document.getElementById(criteria+"_bar").style = "height:"+(value*7)+"px;"
+  
+}
+
+</script>
+</head>
+<body>
+  <div id="topnav" class="topnav">
+    <a href="desk.html">Desk</a>
+    <a href="class.html">Class</a>
+    <a href="staff.html">Staff</a>
+    <a class="active" href="report.html">Reports</a>
+    <span class="material-symbols-outlined" style="margin-left: auto;color:#FCF7F8;">search</span>
+    <input size="30px" type="text" style="border-radius:50px;padding-left: 10px;padding-right:10px;" placeholder="waiting for something to happen?">
+    <a class="imgButton" href="desk.html"><img height="30" src="logo.png"></a>
+    
+  </div>
+
+  <!-- ~~Hamburgers in my head~~ -->
+  <div class="hamburger_menu" id="hamburger_menu">
+    <div style="height: 80px;">
+      <span class="material-symbols-outlined centered-x burger_button" id="open_burger">menu</span>
+      <div class="search" id="search_class">
+        <input style="float:left;margin-right:10px;font-size:20px;" size="20px" type="text" placeholder="Search Class...">
+        <span class="material-symbols-outlined schedule_sort" id="sort_class_time" style="font-size:32px !important;">schedule</span>
+      </div>
+    </div>
+    <div id="selector" class="selector">
+    </div>
+  </div>
+
+    <div style="font-size:26px;width:35%;margin-left:75px;float:left;margin-right: 20px; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;max-height: 80vh;overflow-y: scroll;">
+      <h style="font-size: 26px;">Select</h><br>
+      <span style="font-size: 64px;">Student</span><br>
+      <div id="student_selector" style="overflow-y: auto;max-height: 63vh;">
+      </div>
+    </div>
+
+    <div style="font-size:48px;width:50%;margin-left:50px;float:left;margin-right: 20px; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 0px 10px 10px 10px;color: #FCF7F8;max-height: 80%;overflow-y: scroll;">
+      <div id="grade_view">
+        <h style="font-size: 64px;">Report Card</h>
+        <h style="font-size: 48px;" id="class_info"><br>GEO</h>
+        <div style="margin-top:20px;">
+          <div><span style="font-size: 114px !important;float:left;" class="material-symbols-outlined">account_circle</span></div>
+          <div style="font-size: 32px;">
+            <span name="student_info" id="name">Shnookie</span><br>
+            <span name="student_info"id="term">Term 2</span><br>
+            <span name="student_info"id="form">7E</span></div>
+          </div>
+      </div>
+      
+      <table style="border: 5px solid #FCF7F8;width:90% !important;margin-left: 5%;margin-top: 30px;margin-bottom: 30px;">
+        <tr>
+          <th colspan = "5">Grade</th>
+        </tr>
+        <tr>
+          <th>A</th>
+          <th>B</th>
+          <th>C</th>
+          <th>D</th>
+          <th>tot</th>
+        </tr>
+        <tr>
+          <th class="bar_graph_table">
+            <div id="a_bar" class="centered-x" style="height: 10px;"></div>
+          </th>
+          <th class="bar_graph_table">
+            <div id="b_bar" class="centered-x" style="height: 50px;"></div>
+          </th>
+          <th class="bar_graph_table">
+            <div id="c_bar" class="centered-x" style="height: 50px;"></div>
+          </th>
+          <th class="bar_graph_table">
+            <div id="d_bar" class="centered-x" style="height: 50px;"></div>
+          </th>
+          <th class="bar_graph_table">
+            <div id="t_bar" class="centered-x blue" style="height: 50px;"></div>
+          </th>
+        </tr>
+        <tr>
+          <th class="annoying_input_override">
+            <input id="a" min="0" max="8" autocomplete="off" name="grade_view_thingy" onchange="change_height_bar('a')" type="number"></input>
+          </th>
+          <th class="annoying_input_override">
+            <input id="b" min="0" max="8" autocomplete="off" name="grade_view_thingy" onchange="change_height_bar('b')" type="number"></input>
+          </th>
+          <th class="annoying_input_override">
+            <input id="c" min="0" max="8" autocomplete="off" name="grade_view_thingy" onchange="change_height_bar('c')" type="number"></input>
+          </th>
+          <th class="annoying_input_override">
+            <input id="d" min="0" max="8" autocomplete="off" name="grade_view_thingy" onchange="change_height_bar('d')"type="number"></input>
+          </th>
+          <th class="annoying_input_override">
+            <input id="t" min="0" max="8" autocomplete="off" name="grade_view_thingy" onchange="change_height_bar('t')" type="number"></input>
+          </th>
+        </tr>
+      </table>
+      <div class="button centered-x" style="font-size:32px !important;margin-bottom: 10px;" onclick="on_save_data(cur_student_selected)">Save</div>
+    </div>
+  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  <div class="bottomnav">
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="terms-of-service.html">TOS</a>
+    <a href="cookie-policy.html">Cookie Details</a>
+  </div>
+  <br>
+</body>
