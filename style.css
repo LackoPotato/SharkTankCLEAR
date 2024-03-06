@@ -38,17 +38,18 @@ body {
 }
 
 .button{
-  background-color: #68b0ab;
+  background-color: #368cfc;
   float: left;
-  color: #000000;
+  color: #FCF7F8;
   text-align: center;
-  padding: 14px 16px;
+  padding: 7px 8px;
   text-decoration: none;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .button:hover {
-  background-color: #333333;
+  background-color: #4d50f9;
 }
 
 .topnav a:hover {
@@ -338,12 +339,12 @@ a.imgButton:hover{
 
 .assign_tab_junk{
   font-size:32px;
-  width:25%;
+  width:100%;
   height: 32px;
   background-color: #368cfc;
   color: #fff;;
   padding:10px 10px 10px 10px;
-  overflow-y:scroll;
+  overflow-y:hidden;
   transition: height 200ms cubic-bezier(.97,-0.06,.27,1.55);
   cursor: pointer;
 }
@@ -351,4 +352,26 @@ a.imgButton:hover{
 .blue{
   background-color: #4d50f9;
   color:#FCF7F8;
+}
+
+.annoying_input_override{
+  padding: 0px 25px 0px 25px;
+}
+
+.annoying_input_override input{
+  width:50px;
+  font-size: 32px;
+  color: #333333;
+  font-family: bungee;
+  
+}
+
+.bar_graph_table div{
+  background-color: #FCF7F8;
+  width: 40px;
+  transition: height 200ms cubic-bezier(.97,-0.06,.27,1.55);
+}
+
+.bar_graph_table{
+  vertical-align: bottom;
 }
