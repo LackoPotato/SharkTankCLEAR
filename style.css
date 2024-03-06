@@ -106,10 +106,9 @@ body {
   width: 200px;
   height: 200px;
   border-radius: 10px;
-  background-color: #fcf7f8;
-  border-color:#333333;
+  background-color: #1CD97A !important;
+  border-color:#1CD97A;
   border-style: solid;
-  color: #333333;
 }
 
 .class_schedule .special{
@@ -369,7 +368,7 @@ a.imgButton:hover{
 .bar_graph_table div{
   background-color: #FCF7F8;
   width: 40px;
-  transition: height 200ms cubic-bezier(.97,-0.06,.27,1.55);
+  transition: height 500ms cubic-bezier(.97,-0.06,.27,1.55);
 }
 
 .bar_graph_table{

@@ -61,6 +61,7 @@ function set_overall_class_from_hamburger(id){
   render_students(stud)
   select_student(stud[0][0])
   change_the_thing(stud[0][0])
+  document.getElementById('class_name_please_kill_me_now_i_beg_of_you').innerText = class_arrays[cur_class_selected][0]
 }
 
 function render_students(students){
@@ -263,7 +264,7 @@ function change_height_bar(criteria){
   </div>
 
     <div style="font-size:26px;width:35%;margin-left:75px;float:left;margin-right: 20px; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;max-height: 80vh;overflow-y: scroll;">
-      <h style="font-size: 26px;">Select</h><br>
+      <h style="font-size: 26px;" id="class_name_please_kill_me_now_i_beg_of_you"></h><br>
       <span style="font-size: 64px;">Student</span><br>
       <div id="student_selector" style="overflow-y: auto;max-height: 63vh;">
       </div>
@@ -272,8 +273,7 @@ function change_height_bar(criteria){
     <div style="font-size:48px;width:50%;margin-left:50px;float:left;margin-right: 20px; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 0px 10px 10px 10px;color: #FCF7F8;max-height: 80%;overflow-y: scroll;">
       <div id="grade_view">
         <h style="font-size: 64px;">Report Card</h>
-        <h style="font-size: 48px;" id="class_info"><br>GEO</h>
-        <div style="margin-top:20px;">
+        <div style="margin-top:10px;">
           <div><span style="font-size: 114px !important;float:left;" class="material-symbols-outlined">account_circle</span></div>
           <div style="font-size: 32px;">
             <span name="student_info" id="name">Shnookie</span><br>
@@ -295,19 +295,19 @@ function change_height_bar(criteria){
         </tr>
         <tr>
           <th class="bar_graph_table">
-            <div id="a_bar" class="centered-x" style="height: 10px;"></div>
+            <div id="a_bar" class="centered-x" style="height: 0px;"></div>
           </th>
           <th class="bar_graph_table">
-            <div id="b_bar" class="centered-x" style="height: 50px;"></div>
+            <div id="b_bar" class="centered-x" style="height: 0px;"></div>
           </th>
           <th class="bar_graph_table">
-            <div id="c_bar" class="centered-x" style="height: 50px;"></div>
+            <div id="c_bar" class="centered-x" style="height: 0px;"></div>
           </th>
           <th class="bar_graph_table">
-            <div id="d_bar" class="centered-x" style="height: 50px;"></div>
+            <div id="d_bar" class="centered-x" style="height: 0px;"></div>
           </th>
           <th class="bar_graph_table">
-            <div id="t_bar" class="centered-x blue" style="height: 50px;"></div>
+            <div id="t_bar" class="centered-x blue" style="height: 0px;"></div>
           </th>
         </tr>
         <tr>
@@ -328,6 +328,7 @@ function change_height_bar(criteria){
           </th>
         </tr>
       </table>
+      
       <div class="button centered-x" style="font-size:32px !important;margin-bottom: 10px;" onclick="on_save_data(cur_student_selected)">Save</div>
     </div>
   <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

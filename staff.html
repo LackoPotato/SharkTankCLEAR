@@ -14,6 +14,7 @@
   var cur_admin_action_selected = ""
   var current_tab = "assign_tab"
   var active = false
+  var students_grades = {'7E': {'Gordianus Richard': [5, 2, 7, 5, 4], 'Anto Santo': [6, 4, 6, 5, 5], 'Jesslyn Tangerine': [6, 5, 3, 5, 4], 'Sophy Socks': [8, 5, 6, 5, 6], 'Mr. Sunshine': [8, 2, 8, 7, 6], 'craig': [4, 7, 3, 4, 4], "Mothemule'": [4, 6, 4, 7, 5]}, '8F': {'Richard Board': [7, 7, 5, 6, 6], 'The Maverick': [5, 7, 3, 7, 5], 'Auby': [5, 8, 6, 7, 6], 'AD': [6, 4, 4, 4, 4], 'Shnookums': [8, 7, 5, 6, 6], 'Antroscopic Dissolution': [4, 5, 4, 8, 5], "Danial'": [5, 2, 5, 5, 4]}, 'G9': {'Coros': [4, 7, 8, 5, 6], "Will Wood', 'Amin": [6, 3, 7, 4, 5], 'Madihah': [6, 7, 5, 5, 5], 'Isha': [6, 8, 3, 5, 5], 'Hamanda': [7, 6, 3, 7, 5], 'Sun Tsu': [5, 5, 8, 6, 6], "Sunny'": [8, 4, 4, 6, 5]}}
   var students = {
     "7E": [['Gordianus Richard', '02/29/2009', 'ENG', '0'], ['Anto Santo', '22/03/2009', 'POL', '0'], ['Jesslyn Tangerine', '12/07/2009', 'CHN', '1'], ['Sophy Socks', '15/02/2009', 'MYS', '1'], ['Mr.Sunshine', '02/05/2009', 'MYS', '1'], ['craig', '09/12/2008', 'UAE', '0'], ['Mothemule', '29/07/2009', 'ITA', '0']],
     "8F": [['Richard Board', '17/02/2008', 'USA', '0'], ['The Maverick', '22/02/2008', 'CAN', '0'], ['Auby', '15/11/2008', 'IST', '1'], ['AD', '23/12/2007', 'MYS', '1'], ['Shnookums', '05/05/2008', 'IRL', '0'], ['Antroscopic Dissolution', '22/07/2008', 'QAT', '0'], ['Danial', '01/12/2008', 'FRA', '0']],
@@ -114,7 +115,7 @@ function render_element_arrays(array,form_class){
 
 
 function select_all_children(){
-  children = document.getElementsByName("selectedChildren")
+  children = document.getElementsByName("selectChildrenCheckbox")
   for (let i = 0; i < children.length; i++){
     children[i].checked = 'true'
   }
@@ -197,7 +198,7 @@ function render_individual_item(name, form_class,dateOfBirth,country,gender = 0,
   check_marker = document.createElement("input")
   check_marker.type = "checkbox"
   check_marker.style = "width: 40px;height: 40px;float:right;margin-top:15px;"
-  check_marker.setAttribute("name","selectedChildren")
+  check_marker.setAttribute("name","selectChildrenCheckbox")
   check_marker.setAttribute("autocomplete","off")
   check_marker.setAttribute("id", name)
   outerDiv.appendChild(check_marker)
@@ -219,11 +220,30 @@ function set_overall_action_from_baby_hamburger(id){
 
 //Send data :P UNUSED PLEASE BURN
 
-function encodeAndPassData(location = "report.html"){
+function encodeAndPassDataReportMaking(location = "report.html"){
   url = location+'?class='+ encodeURIComponent(cur_class_selected);
   document.location.href = url;
   console.log(url,document.location.href)
 }
+
+function encodeAndPassDataReportViewing(location = "view-report.html"){
+  url = location+'?class='+ encodeURIComponent(cur_class_selected) + "&?studentsselected=" + encodeURIComponent(stealSelectedChildren());
+  document.location.href = url;
+  console.log(url,document.location.href)
+}
+
+function stealSelectedChildren(){
+  children = document.getElementsByName('selectChildrenCheckbox')
+  childrenToSteal = []
+  for (let i = 0; i < children.length; i++){
+    if (children[i].checked){
+      childrenToSteal.push(children[i].id)
+    }
+  }
+  return childrenToSteal
+}
+
+
 </script>
 </head>
 <body>
@@ -247,13 +267,14 @@ function encodeAndPassData(location = "report.html"){
       <div id="selector" class="selector">
       </div>
     </div>
-
+    <a id="download_file" href="export_students.csv" download="export_students.csv"></a>
     <form>
 
       <div style="width:65%;margin-left:75px;float:left;margin-right: 20px;scroll-padding-bottom: 10px; background-color: #333333;margin-top:15px;border-radius: 10px;padding: 10px 10px 10px 10px;color: #FCF7F8;max-height: 80vh;overflow-y: scroll;">
         <div id="noDelete">
-          <div class="button" onclick="encodeAndPassData()">Make Report</div>
-          <div class="button" style="float: right;" onclick="select_all_children();">Select All</div>
+          <div class="button" onclick="encodeAndPassDataReportMaking()">Make Report</div>
+          <div class="button" id="exportAll" style="margin-left: 10px;" title="Select a student" onclick="if (stealSelectedChildren().length == 0){document.getElementById('exportAll').innerText = 'Select students'} else {document.getElementById('download_file').click();}">Export Data</div>
+          <div class="button" style="float: right;" onclick="select_all_children()">Select All</div>
         </div>
         <br><br>
         <div id="reportMe" style="max-height: 72vh;overflow-y: scroll;">
